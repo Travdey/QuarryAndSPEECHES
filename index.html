@@ -34,20 +34,32 @@
             opacity: 1;
         }
 
-        .countdown-summary {
+        .button-info {
+            margin-top: 14px;
             text-align: center;
             color: #ffffff;
-            max-width: 760px;
-            margin: 0 auto 10px;
-            padding: 0 30px;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: opacity 1.2s ease, transform 1.2s ease;
+            opacity: 0.95;
         }
 
-        .countdown-summary.is-visible {
-            opacity: 1;
-            transform: translateY(0);
+        .button-info .today-date {
+            font-size: 16px;
+            margin-bottom: 4px;
+            opacity: 0.95;
+        }
+
+        .button-info .next-dialogue {
+            font-size: 15px;
+            margin-bottom: 6px;
+        }
+
+        .button-info .active-timer {
+            display: inline-block;
+            font-size: 18px;
+            letter-spacing: 1px;
+            font-weight: bold;
+            padding: 4px 8px;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.08);
         }
 
         .reveal-list {
@@ -233,12 +245,6 @@
         Оно ничем не примечательно... или всё же нет?
     </div>
 
-    <div class="countdown-summary" id="countdownSummary">
-        <div class="today-date" id="todayDate">...</div>
-        <div class="next-dialogue">
-            Увидимся через день, когда следующая РЕЧЬ появится на этом сайте через <span id="nextDialogueTimer">00:00:00</span>
-        </div>
-    </div>
 
     <div class="reveal-list" id="revealList"></div>
 
@@ -262,7 +268,7 @@
         }
 
         function updateItemTimers() {
-            document.querySelectorAll('.reveal-timer').forEach((timer) => {
+            document.querySelectorAll('.reveal-timer, .active-timer').forEach((timer) => {
                 const targetTime = Number(timer.dataset.targetTime);
                 if (!targetTime) {
                     return;
@@ -274,36 +280,14 @@
 
         function updateNextDialogueInfo() {
             const now = new Date();
-            const nextDialogueTimer = document.getElementById('nextDialogueTimer');
-            const todayDate = document.getElementById('todayDate');
+            const todayDateText = `Сегодняшняя дата это ${now.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })}.`;
 
-            if (todayDate) {
-                const day = now.toLocaleDateString('ru-RU', { day: 'numeric' });
-                const month = now.toLocaleDateString('ru-RU', { month: 'long' });
-                todayDate.textContent = `Сегодняшняя дата это ${day} июля.`;
-            }
-
-            if (!nextDialogueTimer) {
-                return;
-            }
-
-            let nextTime;
-            if (now < revealStartDate) {
-                nextTime = revealStartDate;
-            } else {
-                const currentDayIndex = Math.min(revealTasks.length - 1, Math.floor((now - revealStartDate) / (1000 * 60 * 60 * 24)));
-                const nextIndex = currentDayIndex + 1;
-                if (nextIndex < revealTasks.length) {
-                    nextTime = new Date(revealStartDate);
-                    nextTime.setDate(revealStartDate.getDate() + nextIndex);
+            document.querySelectorAll('.button-info').forEach((info) => {
+                const todayDateEl = info.querySelector('.today-date');
+                if (todayDateEl) {
+                    todayDateEl.textContent = todayDateText;
                 }
-            }
-
-            if (nextTime) {
-                nextDialogueTimer.textContent = formatCountdown(nextTime.getTime() - Date.now());
-            } else {
-                nextDialogueTimer.textContent = '00:00:00';
-            }
+            });
         }
         
         const revealList = document.getElementById('revealList');
@@ -324,11 +308,6 @@
                 window.setTimeout(() => header.classList.add('is-visible'), 250);
             }
 
-            const countdownSummary = document.getElementById('countdownSummary');
-            if (countdownSummary) {
-                window.setTimeout(() => countdownSummary.classList.add('is-visible'), 450);
-            }
-
             if (footer) {
                 window.setTimeout(() => footer.classList.add('is-visible'), 250);
             }
@@ -346,6 +325,7 @@
                 nextUnlockDate.setDate(unlockDate.getDate() + 1);
                 const isUnlocked = true;
                 const showTimer = index === currentDayIndex && now >= unlockDate && now < nextUnlockDate;
+                const todayDateText = `Сегодняшняя дата это ${now.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })}.`;
 
                 const item = document.createElement('div');
                 item.className = 'reveal-item';
@@ -353,7 +333,13 @@
                     <button class="reveal-trigger" type="button" ${isUnlocked ? '' : 'disabled'} aria-expanded="false" aria-controls="revealPanel-${index}">
                         —— РЕЧЬ ${index + 1} ——
                     </button>
-                    ${showTimer ? `<div class="reveal-timer" data-target-time="${nextUnlockDate.getTime()}">00:00:00</div>` : ''}
+                    ${showTimer ? `
+                        <div class="button-info">
+                            <div class="today-date">${todayDateText}</div>
+                            <div class="next-dialogue">Следующий диалог откроется через</div>
+                            <div class="active-timer" data-target-time="${nextUnlockDate.getTime()}">00:00:00</div>
+                        </div>
+                    ` : ''}
                     <div class="reveal-panel" id="revealPanel-${index}">
                         <h3>${task.title}</h3>
                         <p>${task.description}</p>
