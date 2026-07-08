@@ -35,31 +35,36 @@
         }
 
         .button-info {
-            margin-top: 14px;
+            margin-top: 128px;
             text-align: center;
             color: #ffffff;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 6s ease, transform 6s ease;
+        }
+
+        .button-info.is-visible {
             opacity: 0.95;
+            transform: translateY(0);
         }
 
         .button-info .today-date {
-            font-size: 16px;
+            font-size: 24px;
             margin-bottom: 4px;
             opacity: 0.95;
         }
 
         .button-info .next-dialogue {
-            font-size: 15px;
+            font-size: 24px;
             margin-bottom: 6px;
         }
 
         .button-info .active-timer {
             display: inline-block;
-            font-size: 18px;
+            font-size: 48px;
             letter-spacing: 1px;
             font-weight: bold;
             padding: 4px 8px;
-            border-radius: 10px;
-            background: rgba(255, 255, 255, 0.08);
         }
 
         .reveal-list {
@@ -87,12 +92,12 @@
             max-width: 260px;
             background: linear-gradient(135deg, #000000, #000000);
             color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 1);
             border-radius: 8px;
             padding: 10px 18px;
             font-size: 20px;
             cursor: pointer;
-            box-shadow: 0 6px 18px rgba(152, 164, 184, 0.25);
+            box-shadow: 0 8px 0px rgb(255, 255, 255);
             font-family: inherit;
         }
 
@@ -115,10 +120,10 @@
             overflow: hidden;
             margin-top: 0;
             padding: 0 20px;
-            background: rgba(36, 37, 39, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(0, 0, 0, 1);
+            border: 1px solid rgb(255, 255, 255);;
             border-radius: 16px;
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 8px 0px rgb(255, 255, 255);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             opacity: 0;
@@ -126,7 +131,7 @@
         }
 
         .reveal-panel.is-open {
-            max-height: 300px;
+            max-height: 1000px;
             margin-top: 16px;
             padding: 20px;
             opacity: 1;
@@ -149,11 +154,17 @@
             opacity: 0.85;
         }
 
+        .reveal-media {
+            width: 100%;
+            display: block;
+            margin-top: 16px;
+        }
+
         .reveal-media img {
-            max-width: 100%;
+            width: 100%;
             height: auto;
-            border-radius: 12px;
-            margin-top: 12px;
+            border-radius: 16px;
+            display: block;
         }
         
         .image-block {
@@ -222,7 +233,7 @@
             padding: 0;
             margin: 0;
             opacity: 0;
-            transition: opacity 20s ease;
+            transition: opacity 12s ease;
         }
 
         .footer.is-visible {
@@ -241,12 +252,17 @@
 </head>
 <body>
     <div class="header-text">
-        Типичное место с ежедневным открытием пронумерованных диалоговых окон.
-        Оно ничем не примечательно... или всё же нет?
+        Типичное место для ежедневного открытия пронумерованных РЕЧЕВЫХ окон. Что тут может быть?
     </div>
 
 
     <div class="reveal-list" id="revealList"></div>
+
+    <div class="button-info" id="summaryBlock">
+        <div class="today-date">Сегодняшняя дата это ...</div>
+        <div class="next-dialogue">Увидимся спустя день на этом сайте для появления новой РЕЧИ через</div>
+        <div class="active-timer" id="summaryTimer" data-target-time="0">00:00:00</div>
+    </div>
 
     <div class="footer" id="footer">
         <img src="/imgs/july15.png" alt="Footer GIF">
@@ -280,20 +296,29 @@
 
         function updateNextDialogueInfo() {
             const now = new Date();
-            const todayDateText = `Сегодняшняя дата это ${now.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })}.`;
+            const summaryTimer = document.getElementById('summaryTimer');
+            const summaryDate = document.querySelector('#summaryBlock .today-date');
+            const currentDayIndex = now >= revealStartDate
+                ? Math.min(revealTasks.length - 1, Math.floor((now - revealStartDate) / (1000 * 60 * 60 * 24)))
+                : -1;
+            const targetTime = now < revealStartDate
+                ? revealStartDate.getTime()
+                : new Date(revealStartDate.getTime() + (currentDayIndex + 1) * 86400000).getTime();
 
-            document.querySelectorAll('.button-info').forEach((info) => {
-                const todayDateEl = info.querySelector('.today-date');
-                if (todayDateEl) {
-                    todayDateEl.textContent = todayDateText;
-                }
-            });
+            if (summaryDate) {
+                summaryDate.textContent = `Сегодняшняя дата это ${now.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })}.`;
+            }
+
+            if (summaryTimer) {
+                summaryTimer.dataset.targetTime = targetTime;
+                summaryTimer.textContent = formatCountdown(targetTime - Date.now());
+            }
         }
         
         const revealList = document.getElementById('revealList');
         const revealStartDate = new Date(new Date().getFullYear(), 6, 15, 0, 0, 0);
         const revealTasks = [
-            { title: '— 1 —', description: '- Стартовая точка.' },
+            { title: '— 1 —', description: '- Стартовая точка. Как говорили раньше: "В начале было слово", но, как оказалось, в начале была "РЕЧЬ 1". Надо же начать очередную загадочную вещь с чего-то, хах!' },
         ];
 
         function renderRevealBlocks() {
@@ -312,10 +337,15 @@
                 window.setTimeout(() => footer.classList.add('is-visible'), 250);
             }
 
+            const summaryBlock = document.getElementById('summaryBlock');
+            if (summaryBlock) {
+                window.setTimeout(() => summaryBlock.classList.add('is-visible'), 450);
+            }
+
             const now = new Date();
             const currentDayIndex = now >= revealStartDate
                 ? Math.min(revealTasks.length - 1, Math.floor((now - revealStartDate) / (1000 * 60 * 60 * 24)))
-                : -1;
+                : 0;
             revealList.innerHTML = '';
 
             revealTasks.forEach((task, index) => {
@@ -324,8 +354,16 @@
                 const nextUnlockDate = new Date(unlockDate);
                 nextUnlockDate.setDate(unlockDate.getDate() + 1);
                 const isUnlocked = true;
-                const showTimer = index === currentDayIndex && now >= unlockDate && now < nextUnlockDate;
-                const todayDateText = `Сегодняшняя дата это ${now.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' })}.`;
+
+                // If you want to add an image to a block, add this HTML inside the reveal-panel of that block:
+                // <div class="reveal-media"><img src="/imgs/your-image.png" alt="Описание изображения"></div>
+                const mediaContent = index === 1
+                    ? `<div class="reveal-media"><img src="/imgs/test_image_hell_yeah.png" alt="Example image"></div>`
+                    : '';
+
+                const extraTextAfterImage = index === 2
+                    ? '<p class="reveal-text-after">Это дополнительный текст после изображения.</p>'
+                    : '';
 
                 const item = document.createElement('div');
                 item.className = 'reveal-item';
@@ -333,16 +371,11 @@
                     <button class="reveal-trigger" type="button" ${isUnlocked ? '' : 'disabled'} aria-expanded="false" aria-controls="revealPanel-${index}">
                         —— РЕЧЬ ${index + 1} ——
                     </button>
-                    ${showTimer ? `
-                        <div class="button-info">
-                            <div class="today-date">${todayDateText}</div>
-                            <div class="next-dialogue">Следующий диалог откроется через</div>
-                            <div class="active-timer" data-target-time="${nextUnlockDate.getTime()}">00:00:00</div>
-                        </div>
-                    ` : ''}
                     <div class="reveal-panel" id="revealPanel-${index}">
                         <h3>${task.title}</h3>
                         <p>${task.description}</p>
+                        ${index === 2 ? `<div class="reveal-media"><img src="/imgs/test_image_hell_yeah.png" alt="Example image"></div>` : mediaContent}
+                        ${extraTextAfterImage}
                         <p class="reveal-note">${isUnlocked ? '' : `Unlocks on ${unlockDate.toLocaleDateString('ru-RU')}`}</p>
                     </div>
                 `;
