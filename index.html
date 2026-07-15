@@ -318,7 +318,10 @@
         const revealList = document.getElementById('revealList');
         const revealStartDate = new Date(new Date().getFullYear(), 6, 15, 0, 0, 0);
         const revealTasks = [
-            { title: '— 1 —', description: '- Стартовая точка. Как говорили раньше: "В начале было слово", но, как оказалось, в начале была "РЕЧЬ 1". Надо же начать очередную загадочную вещь с чего-то, хах!' },
+            { title: '— 1 —', description: 
+            '- Стартовая точка. Как говорили раньше: "В начале было слово", но, как оказалось, в начале была "РЕЧЬ 1". Надо же начать очередную загадочную вещь с чего-то, хах!' },
+            { title: '— 2 —', description: 
+            '- А начну я пожалуй с того, что я сюда буду записывать разные мысли, истории из жизни, и прочие подобные вещи. Конечно, я бы мог однажды в жизни дневник себе завести чтобы делать тоже самое, но уже поздно. Да и можно ли считать эти РЕЧИ своего рода дневником? Я думаю, что можно. По сути я записываю свои мысли сюда. А их поток не остановить… Ах да, ну и самое главное, что я бы хотел сказать… …мяу.' },
         ];
 
         function renderRevealBlocks() {
@@ -374,7 +377,6 @@
                     <div class="reveal-panel" id="revealPanel-${index}">
                         <h3>${task.title}</h3>
                         <p>${task.description}</p>
-                        ${index === 2 ? `<div class="reveal-media"><img src="./imgs/test_image_hell_yeah.png" alt="Example image"></div>` : mediaContent}
                         ${extraTextAfterImage}
                         <p class="reveal-note">${isUnlocked ? '' : `Unlocks on ${unlockDate.toLocaleDateString('ru-RU')}`}</p>
                     </div>
