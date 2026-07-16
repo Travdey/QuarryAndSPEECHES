@@ -24,7 +24,7 @@
         .header-text {
             text-align: center;
             color: #ffffff;
-            padding: 60px 25px;
+            padding: 32px 25px 12px;
             font-size: 24px;
             opacity: 0;
             transition: opacity 6s ease;
@@ -73,7 +73,7 @@
             gap: 24px;
             max-width: 760px;
             margin: 0 auto;
-            padding: 20px 30px 0;
+            padding: 8px 30px 0;
         }
 
         .reveal-item {
@@ -155,21 +155,23 @@
         }
 
         .reveal-media {
-            width: 100%;
-            display: block;
+            display: inline-block;
             margin-top: 16px;
+            max-width: 100%;
         }
 
         .reveal-media img {
-            width: 100%;
+            width: auto;
+            max-width: 100%;
             height: auto;
             border-radius: 16px;
             display: block;
+            image-rendering: pixelated;
         }
         
         .image-block {
             text-align: center;
-            padding: 40px 30px;
+            padding: 25px 60px 25px;
             opacity: 0;
             transition: opacity 6s ease;
         }
@@ -255,6 +257,9 @@
         КАРЬЕР — место для ежедневного открытия пронумерованных РЕЧЕВЫХ окон. Что же там будет написано?
     </div>
 
+    <div class="image-block" id="imageBlock">
+        <img src="./imgs/sonechko.gif" alt="sonechko gif">
+    </div>
 
     <div class="reveal-list" id="revealList"></div>
 
@@ -316,12 +321,14 @@
         }
         
         const revealList = document.getElementById('revealList');
-        const revealStartDate = new Date(new Date().getFullYear(), 6, 15, 0, 0, 0);
+        const revealStartDate = new Date(new Date().getFullYear(), 7, 1, 0, 0, 0);
         const revealTasks = [
             { title: '— 1 —', description: 
             '- Стартовая точка. Как говорили раньше: "В начале было слово", но, как оказалось, в начале была "РЕЧЬ 1". Надо же начать очередную загадочную вещь с чего-то, хах!' },
             { title: '— 2 —', description: 
             '- А начну я пожалуй с того, что я сюда буду записывать разные мысли, истории из жизни, и прочие подобные вещи. Конечно, я бы мог однажды в жизни дневник себе завести чтобы делать тоже самое, но уже поздно. Да и можно ли считать эти РЕЧИ своего рода дневником? Я думаю, что можно. По сути я записываю свои мысли сюда. А их поток не остановить… Ах да, ну и самое главное, что я бы хотел сказать… …мяу.' },
+            { title: '— 3 —', description: 
+            '- Но мне кажется, или вы уже понимаете, чем являются эти пронумерованные РЕЧИ, и к чему в скором времени они приведут. Что ж, я прекрасно знаю, что вы понимаете. Давайте-ка отбросим эти мысли в сторону и поговорим о чём-то другом. Вот например тот факт, что этот вебсайт вообще сущетствует. Да, это одна из моих креативных идей которая взбрела мне в мою черепную коробку. Что ж сказать, делать отдельный вебсайт для записывания моих РЕЧЕЙ вместо их записывания в том же телеграм-канале было довольно... нестандартной идеей. Нет, это не АРГ, я не прошу вас выходить на улицу и искать какие-то послания, спрятанные под камнем к примеру и решать загадки. Но честно, я бы это тоже сделал когда-нибудь, это прикольно. А это просто сайт, на который ты заходишь и клацаешь пронумерованные кнопочки чтобы увидеть текст от Данилки Терпилки (Ой, это не тот персонаж, КХМ-КХМ). Вам всё ещё будет интересно, что я вставлю на следующий день?' },
         ];
 
         function renderRevealBlocks() {
@@ -331,9 +338,14 @@
 
             const header = document.querySelector('.header-text');
             const footer = document.getElementById('footer');
+            const imageBlock = document.getElementById('imageBlock');
 
             if (header) {
                 window.setTimeout(() => header.classList.add('is-visible'), 250);
+            }
+
+            if (imageBlock) {
+                window.setTimeout(() => imageBlock.classList.add('is-visible'), 250);
             }
 
             if (footer) {
@@ -358,14 +370,11 @@
                 nextUnlockDate.setDate(unlockDate.getDate() + 1);
                 const isUnlocked = true;
 
-                // If you want to add an image to a block, add this HTML inside the reveal-panel of that block:
-                // <div class="reveal-media"><img src="/imgs/your-image.png" alt="Описание изображения"></div>
-                const mediaContent = index === 1
-                    ? `<div class="reveal-media"><img src="./imgs/test_image_hell_yeah.png" alt="Example image"></div>`
-                    : '';
-
-                const extraTextAfterImage = index === 2
-                    ? '<p class="reveal-text-after">Это дополнительный текст после изображения.</p>'
+                // If you want to add an image to a block later, add this HTML inside the reveal-panel of that block:
+                // <div class="reveal-media"><img src="/imgs/your-image.png" alt="Описание изобра
+                // жения"></div>
+                const mediaContent = index === 2
+                    ? `<div class="reveal-media"><img src="./imgs/travdey.png" alt="travdey image"></div>`
                     : '';
 
                 const item = document.createElement('div');
@@ -377,7 +386,7 @@
                     <div class="reveal-panel" id="revealPanel-${index}">
                         <h3>${task.title}</h3>
                         <p>${task.description}</p>
-                        ${extraTextAfterImage}
+                        ${mediaContent}
                         <p class="reveal-note">${isUnlocked ? '' : `Unlocks on ${unlockDate.toLocaleDateString('ru-RU')}`}</p>
                     </div>
                 `;
