@@ -88,17 +88,25 @@
         }
 
         .reveal-trigger {
-            width: 100%;
-            max-width: 260px;
+            width: min(100%, 320px);
+            max-width: 100%;
+            min-height: 54px;
             background: linear-gradient(135deg, #000000, #000000);
             color: #ffffff;
             border: 1px solid rgba(255, 255, 255, 1);
             border-radius: 8px;
             padding: 10px 18px;
             font-size: 20px;
+            line-height: 1.25;
             cursor: pointer;
             box-shadow: 0 8px 0px rgb(255, 255, 255);
             font-family: inherit;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            white-space: normal;
+            overflow-wrap: anywhere;
+            word-break: break-word;
         }
 
         .reveal-trigger:disabled {
@@ -417,7 +425,6 @@
         updateNextDialogueInfo();
         setInterval(updateItemTimers, 1000);
         setInterval(updateNextDialogueInfo, 1000);
-        setInterval(renderRevealBlocks, 60000);
     </script>
 </body>
 </html>
