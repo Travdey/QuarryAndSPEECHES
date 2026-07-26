@@ -17,7 +17,7 @@
             margin: 0;
             padding: 0px;
             font-family: "Bell Gothic Bold", "Bell-Gothic Std", sans-serif;
-            background: #000000;
+            background: linear-gradient(180deg, #88bbe8 0%, #c3d4de 45%, #d5d4d0, #e7ceb9, #ffad93 100%);
             min-height: 100vh;
         }
 
@@ -33,6 +33,7 @@
             font-size: 24px;
             opacity: 0;
             transition: opacity 6s ease;
+            text-shadow: 0px 2px 5px rgba(0, 0, 0, 1);
         }
 
         .header-text.is-visible {
@@ -70,6 +71,7 @@
             letter-spacing: 1px;
             font-weight: bold;
             padding: 4px 8px;
+            text-shadow: 0px 2px 5px rgba(0, 0, 0, 1);
         }
 
         .reveal-list {
@@ -207,11 +209,13 @@
             font-size: 24px;
             margin-bottom: 6px;
             opacity: 0.95;
+            text-shadow: 0px 2px 5px rgba(0, 0, 0, 1);
         }
 
         .next-dialogue {
             font-size: 24px;
             color: rgba(255, 255, 255, 0.92);
+            text-shadow: 0px 2px 5px rgba(0, 0, 0, 1);
         }
 
         .next-dialogue span {
@@ -249,7 +253,7 @@
             padding: 0;
             margin: 0;
             opacity: 0;
-            transition: opacity 12s ease;
+            transition: opacity 6s ease;
         }
 
         .footer.is-visible {
@@ -284,7 +288,7 @@
     </div>
 
     <div class="footer" id="footer">
-        <img src="./imgs/gif-animation-2_3.gif" alt="Footer GIF">
+        <img src="./imgs/august1_3.gif" alt="Footer GIF">
     </div>
     
     <script>
@@ -360,7 +364,20 @@
             { title: '— 11 —', description:
             '- Если интерпритировать эти РЕЧИ как дневник, то стоит ли писать важные и долги РЕЧИ каждый день? Или я могу просто... без предупреждений, внезапно начать говорить на китайском? 对， 这是很漂亮，我的朋友。现在你们看不懂。但是我哎你们都。哈哈哈！ <a href="imgs/quarry_song_3.mp3">三</a>个的”哈“！你好从达尼尔"! Короче говоря, веселюсь тем, что пытаюсь на китайском поговорить за все шесть лет его обучения (надеюсь они прошли не зря).'},
             { title: '— 12 —', description:
-            '- Посмотрим, кто читает эти РЕЧИ... Сколько будет <a href="imgs/quarry_song_4.mp3">ЧЕТЫРЕ</a> В КВАДРАТЕ ПЛЮС ПЯТЬДЕСЯТ ДВА ПЛЮС ОДИН? Ответ напишите, а я их буду ждать в ВЕРАНДЕ. Те, кто пройдут этот тест на "лояльность", так скажем, тот и молодец, и заслужит по мороженному в следующий день! :D'}
+            '- Посмотрим, кто читает эти РЕЧИ... Сколько будет <a href="imgs/quarry_song_4.mp3">ЧЕТЫРЕ</a> В КВАДРАТЕ ПЛЮС ПЯТЬДЕСЯТ ДВА ПЛЮС ОДИН? Ответ напишите, а я их буду ждать в ВЕРАНДЕ. Те, кто пройдут этот тест на "лояльность", так скажем, тот и молодец, и заслужит по мороженному в следующий день! :D'},
+            { title: '— 13 —', description:
+            '- За весь этот день... ровным счётом НИКТО не ответил на мой вопрос в предыдущей РЕЧИ. Не <a href="imgs/quarry_song_5.mp3">пять</a> людей, не три, И ДАЖЕ НЕ ОДИН ЧЕЛОВЕК. ВАУ, ПРОСТО ВАУ. Это говорит многое... о нашем обществе...'},
+            { title: '— 14 —', description:
+            '- Вы могли заметить, что слова (если быть точнее, то цифры) в предыдущих пяти РЕЧАХ перенаправляют вас на некоторые аудиофайлы. Они подписаны как "quarry_song", и каждый соответственно пронумерован. Все они означают только одно: кое-что грядётся... <a href="https://youtu.be/ZVSLD2FDuGo">в честь семилетия этого...</a>'},
+            { title: '— 15 —', description:
+            '- Эта анимация имеет огромное значение в жизни, правда.'},
+            { title: '— 16 —', description:
+            '- Так что давайте-ка сменим курс этого веб-сайта, и сделаем его... натуральнее. Теперь, вместо тьмы, здесь царит небо. Здесь царит закат, теперь тут уже не так скучно. И на Солнце смотреть тоже комфортно в такой обстановке, ведь так? Я лично думаю, что так. Ну что ж, ждите следующего дней, друзья.'},
+            { title: '— 17 —', description:
+            '<span style="color: red">ΔΔ Блин, чел, мне кажется у тебя хорошо выходит! :0</span>. - Это было сказано однажды. Спасибо тебе.'},
+            { title: '— 18 —', description:
+            '<a href="https://youtu.be/zyEo2MJY94Q">.  .  .</a>'},
+
 
         ];
 
@@ -415,6 +432,9 @@
                 const mediaContent3 = index === 5
                     ? `<div class="reveal-media"><img src="./imgs/bluerose_FoR_or_RF.png" alt="flower image"></div>`
                     : '';
+                const mediaContent4 = index === 14
+                    ? `<div class="reveal-media"><img src="./imgs/travdey2.png" alt="7th anniversary image"></div>`
+                    : '';
 
                 const item = document.createElement('div');
                 item.className = 'reveal-item';
@@ -428,6 +448,7 @@
                         ${mediaContent}
                         ${mediaContent2}
                         ${mediaContent3}
+                        ${mediaContent4}
                         <p class="reveal-note">${isUnlocked ? '' : `Unlocks on ${unlockDate.toLocaleDateString('ru-RU')}`}</p>
                     </div>
                 `;
