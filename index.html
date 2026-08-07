@@ -14,10 +14,11 @@
         }
 
         body {
+            position: relative;
             margin: 0;
             padding: 0px;
             font-family: "Bell Gothic Bold", "Bell-Gothic Std", sans-serif;
-            background: linear-gradient(180deg, #88bbe8 0%, #c3d4de 45%, #d5d4d0, #e7ceb9, #ffad93 100%);
+            background: linear-gradient(180deg, #121133 0%, #161044 0%, #2d2f77 75%, #3c4196, #5356a5, #8487e9 100%);
             min-height: 100vh;
         }
 
@@ -27,6 +28,8 @@
         }
         
         .header-text {
+            position: relative;
+            z-index: 1;
             text-align: center;
             color: #ffffff;
             padding: 32px 25px 12px;
@@ -267,6 +270,46 @@
             display: block;
             border-radius: 0;
         }
+
+        .starfield {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            min-height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: -1;
+            background: transparent;
+        }
+
+        .star {
+            position: absolute;
+            background: url('./imgs/star.png') center/contain no-repeat;
+            opacity: 0;
+            transform-origin: center;
+            will-change: transform, opacity;
+            animation-fill-mode: both;
+        }
+
+        @keyframes star-fade {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.15);
+            }
+            20% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            80% {
+                opacity: 1;
+                transform: translate(calc(-50% + 10px), calc(-50% + 8px)) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(calc(-50% + 14px), calc(-50% - 8px)) scale(0.2);
+            }
+        }
     </style>
 
 </head>
@@ -276,8 +319,10 @@
     </div>
 
     <div class="image-block" id="imageBlock">
-        <img src="./imgs/sonechko.gif" alt="sonechko gif">
+        <img src="./imgs/travdey.gif" alt="sonechko gif">
     </div>
+
+    <div class="starfield" id="starfield"></div>
 
     <div class="reveal-list" id="revealList"></div>
 
@@ -288,7 +333,7 @@
     </div>
 
     <div class="footer" id="footer">
-        <img src="./imgs/august1_3.gif" alt="Footer GIF">
+        <img src="./imgs/gif-animation-2_night.gif" alt="Footer GIF">
     </div>
     
     <script>
@@ -389,6 +434,9 @@
             '- Прости меня ты, прости меня ты... и ещё прости меня ты. Быть может я и творил что-то страшное между тобой, тобой, а также... тоже тобой, но я надеюсь, я смогу стать лучше в ближайшие времена. Надеюсь негативные моменты не затмевали твоё, твоё, и... твоё восприятие обо мне. Просто простите.'},
             { title: '— 24 —', description:
             '- Окей окей, я думаю что хватит этого депрессивного постинга РЕЧЕЙ. Мне должно всего лишь хватить было ОДНОЙ речи, но нет, аж две РЕЧИ про прощения сделал. Хотя многие отказались от этой затеи, и я уважаю желание каждого. Так что считайте, что я уже извинился перед всеми, с кем мог, и последующие РЕЧИ будут теперь не об этом. Эх, а ведь правда осталось совсем чуть-чуть.'},
+            { title: '— 25 —', description:
+            '- Семь дней осталось, ровно неделя. Это ощущается словно приговор, хотя это естественный этап в жизни. Но осознание того, что тебе осталась всего лишь ОДНА НЕДЕЛЯ для того, чтобы ты побыл по истине подростком... ... ...не знаю, пугает. Знаю, что большинство моих друзей являются уже совершеннолетними людьми, и они тоже через это проходили. Кто как, думаю. Кому-то было абсолютно кристалльно всё равно, кто-то волновался также, как я. На данный момент у меня ощущается эта "депрессия" грубо говоря, как не крути придётся пережить эту неделю. Но зачем волноваться в первую очередь? Естественная реакция на подобное событие, я понимаю однако. Но это меланхолийное эмоциональное состояние берёт вверх. Но мне скоро будет всё равно, спустя неделю или месяц. Но сейчас... сейчас это нихрена не всё равно. Все эти года я был интересным и странноватым ребёнком+подростком. Теперь настало время для апгрейда в виде странноватого раннего взрослого, ха-ха-ха-ха-ха... Так или иначе, я хочу ценить эту последующую неделю до следующей субботы.'},
+
         ];
 
         function renderRevealBlocks() {
@@ -487,6 +535,64 @@
                 }
             });
         }
+
+        const starfield = document.getElementById('starfield');
+
+        function updateStarfieldSize() {
+            if (!starfield) {
+                return;
+            }
+
+            starfield.style.width = `${Math.max(document.documentElement.scrollWidth, document.documentElement.clientWidth)}px`;
+            starfield.style.height = `${Math.max(document.documentElement.scrollHeight, document.documentElement.clientHeight)}px`;
+        }
+
+        function createStar() {
+            if (!starfield) {
+                return;
+            }
+
+            const star = document.createElement('div');
+            star.className = 'star';
+
+            const size = Math.random() * 3 + 6;
+            const top = Math.random() * 100;
+            const left = Math.random() * 100;
+            const opacity = Math.random() * 0.35 + 0.35;
+            const duration = Math.random() * 6 + 12;
+            const delay = Math.random() * 2.5;
+            const easing = ['ease', 'ease-in', 'ease-out', 'ease-in-out'][Math.floor(Math.random() * 4)];
+
+            star.style.width = `${size}px`;
+            star.style.height = `${size}px`;
+            star.style.top = `${top}%`;
+            star.style.left = `${left}%`;
+            star.style.opacity = `${opacity}`;
+            star.style.animation = `star-fade ${duration}s ${easing} ${delay}s forwards`;
+            star.style.backgroundSize = 'contain';
+            star.style.backgroundRepeat = 'no-repeat';
+            star.style.backgroundPosition = 'center';
+            star.style.transform = 'translate(-50%, -50%) scale(0.2)';
+
+            starfield.appendChild(star);
+            window.setTimeout(() => {
+                star.remove();
+            }, (duration + delay) * 1000 + 800);
+        }
+
+        function launchStarSequence() {
+            setInterval(() => {
+                const count = Math.floor(Math.random() * 4) + 1;
+                for (let i = 0; i < count; i += 1) {
+                    setTimeout(createStar, i * 700);
+                }
+            }, 256);
+        }
+
+        window.addEventListener('load', updateStarfieldSize);
+        window.addEventListener('resize', updateStarfieldSize);
+
+        launchStarSequence();
 
         renderRevealBlocks();
         updateItemTimers();
