@@ -195,7 +195,29 @@
             transition: opacity 6s ease;
         }
 
+        .image-block2 {
+            text-align: center;
+            padding: 25px 60px 25px;
+            opacity: 0;
+            transition: opacity 6s ease;
+        }
+
+        .image-block3 {
+            text-align: center;
+            padding: 25px 60px 25px;
+            opacity: 0;
+            transition: opacity 6s ease;
+        }
+
         .image-block.is-visible {
+            opacity: 1;
+        }
+
+        .image-block2.is-visible {
+            opacity: 1;
+        }
+
+        .image-block3.is-visible {
             opacity: 1;
         }
 
@@ -228,6 +250,16 @@
         }
         
         .image-block img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .image-block2 img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        .image-block3 img {
             max-width: 100%;
             height: auto;
         }
@@ -276,7 +308,6 @@
             top: 0;
             left: 0;
             width: 100%;
-            min-height: 100%;
             pointer-events: none;
             overflow: hidden;
             z-index: -1;
@@ -318,8 +349,16 @@
         КАРЬЕР — место для ежедневного открытия пронумерованных РЕЧЕВЫХ окон. Что же там будет написано?
     </div>
 
-    <div class="image-block" id="imageBlock">
-        <img src="./imgs/irochka.gif" alt="sonechko gif">
+    <div class="image-block" id="imageBlock1">
+        <img src="./imgs/toma.gif" alt="sonechko gif">
+    </div>
+
+    <div class="image-block2" id="imageBlock2">
+        <img src="./imgs/vaneknobro.gif" alt="vaneknobro gif">
+    </div>
+
+    <div class="image-block3" id="imageBlock3">
+        <img src="./imgs/ych.gif" alt="ych gif">
     </div>
 
     <div class="starfield" id="starfield"></div>
@@ -438,6 +477,9 @@
             '- Семь дней осталось, ровно неделя. Это ощущается словно приговор, хотя это естественный этап в жизни. Но осознание того, что тебе осталась всего лишь ОДНА НЕДЕЛЯ для того, чтобы ты побыл по истине подростком... ... ...не знаю, пугает. Знаю, что большинство моих друзей являются уже совершеннолетними людьми, и они тоже через это проходили. Кто как, думаю. Кому-то было абсолютно кристалльно всё равно, кто-то волновался также, как я. На данный момент у меня ощущается эта "депрессия" грубо говоря, как не крути придётся пережить эту неделю. Но зачем волноваться в первую очередь? Естественная реакция на подобное событие, я понимаю однако. Но это меланхолийное эмоциональное состояние берёт вверх. Но мне скоро будет всё равно, спустя неделю или месяц. Но сейчас... сейчас это нихрена не всё равно. Все эти года я был интересным и странноватым ребёнком+подростком. Теперь настало время для апгрейда в виде странноватого раннего взрослого, ха-ха-ха-ха-ха... Так или иначе, я хочу ценить эту последующую неделю до следующей субботы. <span style="color: #54FF5F">ТРАВЯННОЙ СУББОТЫ.</span>'},
             { title: '— 26 —', description:
             '- Не смотря на внезапный депрессняк, я считаю что надо провести эту неделю с кайфом. Да, погрустишь чутка, но зато я смогу прогуляться по посёлку, на мечах подраться, и просто МАКСИМАЬНО провести эту неделю... как обычно в принципе. Я запутался. Запутался от всей этой мини-меланхолии вокруг конца жизненного этапа. Но я буду кайфовать! <span style="color: #FF7954">Ох, Луна светится...</span>'},
+            { title: '— 27 —', description:
+            '- Нормально я так сегодня подрался на мечах (не реальных, мягких но тоже очень сильных). В последние дни перед совершеннолетием, это то, что мне не хватало. Зато я могу уйти из этого этапа в жизни с прикольными воспоминаниями. Каждый день для существует, чтобы мы создавали воспоминания. Но, как говорил Винни Пух, мы сами даже не знали, что мы создаём воспоминания, ибо мы просто веселились. И... это правда. Я делаю абсолютно новые воспомнинания, в моей жизни будут ещё встречатся люди в виде новых знакомых и даже друзей, <span style="color: #FF5465">но это никогда не позволит забыть те самые времена с теми,</span> <span style="color: #FFA154">с кем я начинал "ползти" и творить тоже абсолютно новые воспоминания.</span> <span style="color: #5479FF">Смешные и крайне ахереть какие забавные также, хехехе.</span>'},
+
 
 
         ];
@@ -449,14 +491,16 @@
 
             const header = document.querySelector('.header-text');
             const footer = document.getElementById('footer');
-            const imageBlock = document.getElementById('imageBlock');
+            const imageBlocks = document.querySelectorAll('.image-block, .image-block2, .image-block3');
 
             if (header) {
                 window.setTimeout(() => header.classList.add('is-visible'), 250);
             }
 
-            if (imageBlock) {
-                window.setTimeout(() => imageBlock.classList.add('is-visible'), 250);
+            if (imageBlocks.length) {
+                imageBlocks.forEach((block, index) => {
+                    window.setTimeout(() => block.classList.add('is-visible'), 250 + index * 120);
+                });
             }
 
             if (footer) {
@@ -534,6 +578,7 @@
                         }
                         const isOpen = panel.classList.toggle('is-open');
                         button.setAttribute('aria-expanded', String(isOpen));
+                        window.setTimeout(updateStarfieldSize, 300);
                     });
                 }
             });
@@ -546,8 +591,7 @@
                 return;
             }
 
-            starfield.style.width = `${Math.max(document.documentElement.scrollWidth, document.documentElement.clientWidth)}px`;
-            starfield.style.height = `${Math.max(document.documentElement.scrollHeight, document.documentElement.clientHeight)}px`;
+            starfield.style.height = `${Math.max(document.documentElement.scrollHeight, document.body.scrollHeight)}px`;
         }
 
         function createStar() {
@@ -592,16 +636,14 @@
             }, 256);
         }
 
-        window.addEventListener('load', updateStarfieldSize);
+        window.addEventListener('load', () => {
+            renderRevealBlocks();
+            updateItemTimers();
+            updateNextDialogueInfo();
+            updateStarfieldSize();
+            launchStarSequence();
+        });
         window.addEventListener('resize', updateStarfieldSize);
-
-        launchStarSequence();
-
-        renderRevealBlocks();
-        updateItemTimers();
-        updateNextDialogueInfo();
-        setInterval(updateItemTimers, 1000);
-        setInterval(updateNextDialogueInfo, 1000);
     </script>
 </body>
 </html>
