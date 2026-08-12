@@ -350,7 +350,7 @@
     </div>
 
     <div class="image-block" id="imageBlock1">
-        <img src="./imgs/alock.gif" alt="sonechko gif">
+        <img src="./imgs/kosmo.gif" alt="sonechko gif">
     </div>
 
     <div class="starfield" id="starfield"></div>
@@ -475,6 +475,9 @@
             '- <span style="color: #87869F">Да даже если и interactions с некоторыми людьми были кратковременными и редкими, воспоминания всё равно создаются.</span> Они не умирают, а наоборот... расцветают. Каждое воспоминание это цветок, а наш мозг всего лишь сад для таких ярких цветов. Умная мысль йомайо.'},
             { title: '— 29 —', description:
             '- <span style="color: #CB42E7">Да, бляха, даже ТЕ воспоминания, которые я НИКОГДА в СВОЕЙ ОДНОЙ ТАКОЙ ЖИЗНИ не ЗАБУДУ. ЭТО БУДЕТ ПРИРАВНИВАТЬСЯ К ФОРТУНЕ ЕСЛИ Я ЗАБУДУ ОДИН... нееееет... даже ДВА СПЕЦИФИЧЕСКИХ ИНЦИДЕНТА, СВЯЗАННЫХ С ТЕМ, КАК Я ОТВЕРНУЛСЯ ДЛЯ ТОГО, ЧТОБЫ ВЫЙТИ ИЗ КОМНАТЫ, ОСТАВИВ ВКЛЮЧЁННОЙ МОЮ ВЕБКУ. НЕ ЗАБУДУ. НАДЕЮСЬ ПОДУШКА БУДЕТ ТЁПЛОЙ ДО КОНЦА СВОИХ ДНЕЙ ТОГО, К КОМУ Я ОБРАЩАЮСЬ ЧЕРЕЗ ЭТУ РЕЧЬ И ЦВЕТ РЕЧИ.</span> Я так забавно звучу когда злюсь, да я бы сказал что я не умею злиться. Но справедливости ради, это тоже воспоминание.'},
+            { title: '— 30 —', description:
+            '- <span style="color: #5754F5">Иногда в твоих воспоминаниях существуют такие творческие люди, что ты даже словил гиперфикс от их же творчества. Никогда не предвидишь такое.</span> Это и есть чудеса жизни. Это было чудом моего детства. Кто знает, какие чудеса будет хранить взрослая жизнь...'},
+
 
 
 
@@ -520,10 +523,7 @@
                 const nextUnlockDate = new Date(unlockDate);
                 nextUnlockDate.setDate(unlockDate.getDate() + 1);
                 const isUnlocked = true;
-
-                // If you want to add an image to a block later, add this HTML inside the reveal-panel of that block:
-                // <div class="reveal-media"><img src="/imgs/your-image.png" alt="Описание изобра
-                // жения"></div>
+                
                 const mediaContent = index === 2
                     ? `<div class="reveal-media"><img src="./imgs/travdey.png" alt="travdey image"></div>`
                     : '';
