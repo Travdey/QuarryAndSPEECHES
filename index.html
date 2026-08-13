@@ -323,6 +323,10 @@
             animation-fill-mode: both;
         }
 
+        .color-cycle {
+            transition: color 0.33s linear;
+        }
+
         @keyframes star-fade {
             0% {
                 opacity: 0;
@@ -350,7 +354,7 @@
     </div>
 
     <div class="image-block" id="imageBlock1">
-        <img src="./imgs/kosmo.gif" alt="sonechko gif">
+        <img src="./imgs/artosh.gif" alt="sonechko gif">
     </div>
 
     <div class="starfield" id="starfield"></div>
@@ -477,6 +481,8 @@
             '- <span style="color: #CB42E7">Да, бляха, даже ТЕ воспоминания, которые я НИКОГДА в СВОЕЙ ОДНОЙ ТАКОЙ ЖИЗНИ не ЗАБУДУ. ЭТО БУДЕТ ПРИРАВНИВАТЬСЯ К ФОРТУНЕ ЕСЛИ Я ЗАБУДУ ОДИН... нееееет... даже ДВА СПЕЦИФИЧЕСКИХ ИНЦИДЕНТА, СВЯЗАННЫХ С ТЕМ, КАК Я ОТВЕРНУЛСЯ ДЛЯ ТОГО, ЧТОБЫ ВЫЙТИ ИЗ КОМНАТЫ, ОСТАВИВ ВКЛЮЧЁННОЙ МОЮ ВЕБКУ. НЕ ЗАБУДУ. НАДЕЮСЬ ПОДУШКА БУДЕТ ТЁПЛОЙ ДО КОНЦА СВОИХ ДНЕЙ ТОГО, К КОМУ Я ОБРАЩАЮСЬ ЧЕРЕЗ ЭТУ РЕЧЬ И ЦВЕТ РЕЧИ.</span> Я так забавно звучу когда злюсь, да я бы сказал что я не умею злиться. Но справедливости ради, это тоже воспоминание.'},
             { title: '— 30 —', description:
             '- <span style="color: #5754F5">Иногда в твоих воспоминаниях существуют такие творческие люди, что ты даже словил гиперфикс от их же творчества. Никогда не предвидишь такое.</span> Это и есть чудеса жизни. Это было чудом моего детства. Кто знает, какие чудеса будет хранить взрослая жизнь...'},
+            { title: '— 31 —', description:
+            '- <span style="color: #D33C1D">А некоторые с тобой с самого детства. Не раннего, но детства. Они буквально видели и пережили все фазы/периоды, называйте как хотите. Даже спустя время, они всё ещё тут.</span> По истине потрясающе осознавать это. Я всё равно хочу сказать всем спасибо, кто был со мной в этом этапе моей жизни, кто видел мои странные и серьёзные стороны, кто лицезрел мои творения и является поклонником уже несколько лет. Моё так сказать "несовершеннолетнее" путешествие заканчивается завтра. Да даже пока я вижу эту РЕЧЬ, на душе всё равно чувствуется некая тоска. У меня ещё есть день сегодня, чтобы полноценно прожить (де факто) последний день как несовершеннолетний подросток. Не знаю почему я на этом акценирую внимания, но пологаю, что ни я, ни вы, АБСОЛЮТНО никто никогда больше не увидит Даню/Траву в таком юном возрасте. Он вскоре тоже присоединится к "совершеннолетний" gang. Кстати, вопрос вам интересный: бывал ли у вас страх быть "скучным взрослым"? Про эту идею я услышал от другого человека, но всё равно... не смущает вас тот факт, что вы можете быть буквально нормисом живя жизнь взрослого человека? Вот я задумался об этом. И сейчас я понимаю, что не хотелось бы мне быть "скучным взрослым". Надо жить, надо находить ОТО ВСЮДУ вдохновения и вообще КАЙФОВАТЬ, БЫТЬ НА ЧИЛЕ, НА РАСЛАБОНЕ!!! Вполне, вполне возможно всё это. Это уже, ребята, от меня зависит... В любом случае...... на окончательный последок... <span class="color-cycle-target">Спасибо ВАМ ВСЕМ.</span>'}
 
 
 
@@ -582,6 +588,32 @@
 
         const starfield = document.getElementById('starfield');
 
+        function createColorCycler(selector, colorsArray, intervalMs = 500) {
+            const elements = Array.from(document.querySelectorAll(selector));
+            if (!elements.length) return () => {};
+            const colors = Array.isArray(colorsArray)
+                ? colorsArray.filter(Boolean)
+                : (typeof colorsArray === 'string' ? colorsArray.split(',').map(s => s.trim()).filter(Boolean) : []);
+            if (!colors.length) return () => {};
+
+            elements.forEach(el => {
+                el.classList.add('color-cycle');
+                el.dataset._colorIndex = '0';
+            });
+
+            const tick = () => {
+                elements.forEach(el => {
+                    const i = parseInt(el.dataset._colorIndex || '0', 10) % colors.length;
+                    el.style.color = colors[i];
+                    el.dataset._colorIndex = String((i + 1) % colors.length);
+                });
+            };
+
+            tick();
+            const id = window.setInterval(tick, intervalMs);
+            return () => window.clearInterval(id);
+        }
+
         function updateStarfieldSize() {
             if (!starfield) {
                 return;
@@ -638,6 +670,12 @@
             updateNextDialogueInfo();
             updateStarfieldSize();
             launchStarSequence();
+
+            createColorCycler('.color-cycle-target', ['#FFD154', '#54FF5F', '#FF7954', '#FF5465', '#FFA154', '#5479FF', '#87869F', '#CB42E7', '#5754F5', '#D33C1D'], 500);
+
+            // keep countdowns updated every second
+            window.setInterval(updateItemTimers, 1000);
+            window.setInterval(updateNextDialogueInfo, 1000);
         });
         window.addEventListener('resize', updateStarfieldSize);
     </script>
