@@ -18,7 +18,7 @@
             margin: 0;
             padding: 0px;
             font-family: "Bell Gothic Bold", "Bell-Gothic Std", sans-serif;
-            background: linear-gradient(180deg, #121133 0%, #161044 0%, #2d2f77 75%, #3c4196, #5356a5, #8487e9 100%);
+            background: black;
             min-height: 100vh;
         }
 
@@ -31,7 +31,7 @@
             position: relative;
             z-index: 1;
             text-align: center;
-            color: #ffffff;
+            color: #FFD154;
             padding: 32px 25px 12px;
             font-size: 24px;
             opacity: 0;
@@ -46,7 +46,7 @@
         .button-info {
             margin-top: 128px;
             text-align: center;
-            color: #ffffff;
+            color: #FFD154;
             opacity: 0;
             transform: translateY(10px);
             transition: opacity 6s ease, transform 6s ease;
@@ -88,7 +88,7 @@
 
         .reveal-item {
             text-align: center;
-            color: #ffffff;
+            color: #FFD154;
             opacity: 0;
             transition: opacity 6s ease;
             width: 100%;
@@ -99,18 +99,18 @@
         }
 
         .reveal-trigger {
-            width: min(100%, 320px);
+            width: min(100%, 420px);
             max-width: 100%;
             box-sizing: border-box;
             background: linear-gradient(135deg, #000000, #000000);
-            color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 1);
+            color: #FFD154;
+            border: 1px solid #FFD154;
             border-radius: 8px;
             padding: 12px 18px;
             font-size: 20px;
             line-height: 1.3;
             cursor: pointer;
-            box-shadow: 0 8px 0px rgb(255, 255, 255);
+            box-shadow: 0 8px 0px #FFD154;
             font-family: inherit;
             display: inline-block;
             margin: 0 auto;
@@ -130,7 +130,7 @@
             margin-top: 10px;
             font-size: 16px;
             letter-spacing: 1px;
-            color: #ffffff;
+            color: #FFD154;
             opacity: 0.95;
         }
 
@@ -140,9 +140,9 @@
             margin-top: 0;
             padding: 0 20px;
             background: rgba(0, 0, 0, 1);
-            border: 1px solid rgb(255, 255, 255);;
+            border: 1px solid #FFD154;
             border-radius: 16px;
-            box-shadow: 0 8px 0px rgb(255, 255, 255);
+            box-shadow: 0 8px 0px #FFD154;
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             opacity: 0;
@@ -223,7 +223,7 @@
 
         .countdown-summary {
             text-align: center;
-            color: #ffffff;
+            color: #FFD154;
             max-width: 760px;
             margin: 0 auto 10px;
             padding: 0 30px;
@@ -239,7 +239,7 @@
 
         .next-dialogue {
             font-size: 24px;
-            color: rgba(255, 255, 255, 0.92);
+            color: #FFD154;
             text-shadow: 0px 2px 5px rgba(0, 0, 0, 1);
         }
 
@@ -323,6 +323,16 @@
             animation-fill-mode: both;
         }
 
+        .starfield-disabled .starfield,
+        .starfield-disabled .star {
+            display: none !important;
+        }
+
+        /* When timer is disabled hide the active timer */
+        .timer-disabled .active-timer {
+            display: none !important;
+        }
+
         .color-cycle {
             transition: color 0.33s linear;
         }
@@ -350,11 +360,11 @@
 </head>
 <body>
     <div class="header-text">
-        КАРЬЕР — место для ежедневного открытия пронумерованных РЕЧЕВЫХ окон. Что же там будет написано?
+        КАРЬЕР — место для ежедневного открытия пронумерованных РЕЧЕВЫХ окон. Когда-то на протяжении месяца эти РЕЧИ вправду публиковались сюда. Но этого уже не будет в тот момент, когда наступит ФИНАЛЬНАЯ РЕЧЬ. А после неё... не завтра, не даже после завтра - не будет РЕЧЕЙ. РЕЧИ прослужили своё. Теперь, на ультимативный вопрос "Что же там будет написано?", который был в конце этой надписи, стоит смело ответить: "Один из периодов в жизни". Спасибо, что наблюдали за ним или просто знали об существовании РЕЧЕЙ целый месяц, друзья :D
     </div>
 
     <div class="image-block" id="imageBlock1">
-        <img src="./imgs/artosh.gif" alt="sonechko gif">
+        <img src="./imgs/sonechko.gif" alt="sonechko gif">
     </div>
 
     <div class="starfield" id="starfield"></div>
@@ -362,13 +372,12 @@
     <div class="reveal-list" id="revealList"></div>
 
     <div class="button-info" id="summaryBlock">
-        <div class="today-date">Сегодняшняя дата это ...</div>
-        <div class="next-dialogue">Увидимся спустя день на этом сайте, когда появится новая РЕЧЬ через</div>
+        <div class="today-date">Сегодняшняя дата это 14 августа.</div>
+        <div class="next-dialogue">Спасибо всем, кто следил за РЕЧАМИ на сия сайте!</div>
         <div class="active-timer" id="summaryTimer" data-target-time="0">00:00:00</div>
     </div>
 
     <div class="footer" id="footer">
-        <img src="./imgs/gif-animation-2_night.gif" alt="Footer GIF">
     </div>
     
     <script>
@@ -387,6 +396,7 @@
         }
 
         function updateItemTimers() {
+            if (typeof ENABLE_TIMER !== 'undefined' && !ENABLE_TIMER) return;
             document.querySelectorAll('.reveal-timer, .active-timer').forEach((timer) => {
                 const targetTime = Number(timer.dataset.targetTime);
                 if (!targetTime) {
@@ -398,6 +408,7 @@
         }
 
         function updateNextDialogueInfo() {
+            if (typeof ENABLE_TIMER !== 'undefined' && !ENABLE_TIMER) return;
             const now = new Date();
             const summaryTimer = document.getElementById('summaryTimer');
             const summaryDate = document.querySelector('#summaryBlock .today-date');
@@ -482,11 +493,9 @@
             { title: '— 30 —', description:
             '- <span style="color: #5754F5">Иногда в твоих воспоминаниях существуют такие творческие люди, что ты даже словил гиперфикс от их же творчества. Никогда не предвидишь такое.</span> Это и есть чудеса жизни. Это было чудом моего детства. Кто знает, какие чудеса будет хранить взрослая жизнь...'},
             { title: '— 31 —', description:
-            '- <span style="color: #D33C1D">А некоторые с тобой с самого детства. Не раннего, но детства. Они буквально видели и пережили все фазы/периоды, называйте как хотите. Даже спустя время, они всё ещё тут.</span> По истине потрясающе осознавать это. Я всё равно хочу сказать всем спасибо, кто был со мной в этом этапе моей жизни, кто видел мои странные и серьёзные стороны, кто лицезрел мои творения и является поклонником уже несколько лет. Моё так сказать "несовершеннолетнее" путешествие заканчивается завтра. Да даже пока я вижу эту РЕЧЬ, на душе всё равно чувствуется некая тоска. У меня ещё есть день сегодня, чтобы полноценно прожить (де факто) последний день как несовершеннолетний подросток. Не знаю почему я на этом акценирую внимания, но пологаю, что ни я, ни вы, АБСОЛЮТНО никто никогда больше не увидит Даню/Траву в таком юном возрасте. Он вскоре тоже присоединится к "совершеннолетний" gang. Кстати, вопрос вам интересный: бывал ли у вас страх быть "скучным взрослым"? Про эту идею я услышал от другого человека, но всё равно... не смущает вас тот факт, что вы можете быть буквально нормисом живя жизнь взрослого человека? Вот я задумался об этом. И сейчас я понимаю, что не хотелось бы мне быть "скучным взрослым". Надо жить, надо находить ОТО ВСЮДУ вдохновения и вообще КАЙФОВАТЬ, БЫТЬ НА ЧИЛЕ, НА РАСЛАБОНЕ!!! Вполне, вполне возможно всё это. Это уже, ребята, от меня зависит... В любом случае...... на окончательный последок... <span class="color-cycle-target">Спасибо ВАМ ВСЕМ.</span>'}
-
-
-
-
+            '- <span style="color: #D33C1D">А некоторые с тобой с самого детства. Не раннего, но детства. Они буквально видели и пережили все фазы/периоды, называйте как хотите. Даже спустя время, они всё ещё тут.</span> По истине потрясающе осознавать это. Я всё равно хочу сказать всем спасибо, кто был со мной в этом этапе моей жизни, кто видел мои странные и серьёзные стороны, кто лицезрел мои творения и является поклонником уже несколько лет. Моё так сказать "несовершеннолетнее" путешествие заканчивается завтра. Да даже пока я вижу эту РЕЧЬ, на душе всё равно чувствуется некая тоска. У меня ещё есть день сегодня, чтобы полноценно прожить (де факто) последний день как несовершеннолетний подросток. Не знаю почему я на этом акценирую внимания, но пологаю, что ни я, ни вы, АБСОЛЮТНО никто никогда больше не увидит Даню/Траву в таком юном возрасте. Он вскоре тоже присоединится к "совершеннолетний" gang. Кстати, вопрос вам интересный: бывал ли у вас страх быть "скучным взрослым"? Про эту идею я услышал от другого человека, но всё равно... не смущает вас тот факт, что вы можете быть буквально нормисом живя жизнь взрослого человека? Вот я задумался об этом. И сейчас я понимаю, что не хотелось бы мне быть "скучным взрослым". Надо жить, надо находить ОТО ВСЮДУ вдохновения и вообще КАЙФОВАТЬ, БЫТЬ НА ЧИЛЕ, НА РАСЛАБОНЕ!!! Вполне, вполне возможно всё это. Это уже, ребята, от меня зависит... В любом случае...... на окончательный последок... <span class="color-cycle-target">Спасибо ВАМ ВСЕМ.</span>'},
+            {title: '— ФИНАЛЬНАЯ РЕЧЬ —', description:
+            '<a href="https://youtu.be/k_wpn795khE">.     .     .</a>'}
         ];
 
         function renderRevealBlocks() {
@@ -524,11 +533,17 @@
             revealList.innerHTML = '';
 
             revealTasks.forEach((task, index) => {
+                // Only render the interactive reveal for РЕЧЬ 32 (index 31).
+                // Skip adding DOM nodes for reveals 1..31 (indices 0..30).
+                if (index < 31) {
+                    return;
+                }
                 const unlockDate = new Date(revealStartDate);
                 unlockDate.setDate(revealStartDate.getDate() + index);
                 const nextUnlockDate = new Date(unlockDate);
                 nextUnlockDate.setDate(unlockDate.getDate() + 1);
-                const isUnlocked = true;
+                // Make the first 31 reveals unavailable (keep them in the DOM but disabled)
+                const isUnlocked = index >= 31;
                 
                 const mediaContent = index === 2
                     ? `<div class="reveal-media"><img src="./imgs/travdey.png" alt="travdey image"></div>`
@@ -548,27 +563,50 @@
 
                 const item = document.createElement('div');
                 item.className = 'reveal-item';
-                item.innerHTML = `
-                    <button class="reveal-trigger" type="button" ${isUnlocked ? '' : 'disabled'} aria-expanded="false" aria-controls="revealPanel-${index}">
-                        —— РЕЧЬ ${index + 1} ——
-                    </button>
-                    <div class="reveal-panel" id="revealPanel-${index}">
-                        <h3>${task.title}</h3>
-                        <p>${task.description}</p>
-                        ${mediaContent}
-                        ${mediaContent2}
-                        ${mediaContent3}
-                        ${mediaContent4}
-                        ${mediaContent5}
-                        <p class="reveal-note">${isUnlocked ? '' : `Unlocks on ${unlockDate.toLocaleDateString('ru-RU')}`}</p>
-                    </div>
-                `;
+
+                // For РЕЧЬ 1..31 (index 0..30) remove the interactive button but keep the content in the DOM.
+                // Only render the reveal button for РЕЧЬ 32 and later (index >= 31).
+                if (isUnlocked) {
+                    item.innerHTML = `
+                        <button class="reveal-trigger" type="button" aria-expanded="false" aria-controls="revealPanel-${index}">
+                            <h3>—— ФИНАЛЬНАЯ РЕЧЬ ——</h3>
+                        </button>
+                        <div class="reveal-panel" id="revealPanel-${index}">
+                            <h3>${task.title}</h3>
+                            <p>${task.description}</p>
+                            ${mediaContent}
+                            ${mediaContent2}
+                            ${mediaContent3}
+                            ${mediaContent4}
+                            ${mediaContent5}
+                            <p class="reveal-note"></p>
+                        </div>
+                    `;
+                } else {
+                    // Render content without the numeric title for temporary hiding of numbers.
+                    item.innerHTML = `
+                        <div class="reveal-header">
+                            <h3>—— ФИНАЛЬНАЯ РЕЧЬ ——</h3>
+                        </div>
+                        <div class="reveal-panel" id="revealPanel-${index}">
+                            <p>${task.description}</p>
+                            ${mediaContent}
+                            ${mediaContent2}
+                            ${mediaContent3}
+                            ${mediaContent4}
+                            ${mediaContent5}
+                            <p class="reveal-note">Unlocks on ${unlockDate.toLocaleDateString('ru-RU')}</p>
+                        </div>
+                    `;
+                }
 
                 revealList.appendChild(item);
 
+                // Delay visibility: make the РЕЧЬ 32 button appear after 6000ms, others keep original timing
+                const visibleDelay = (index === 31) ? 6000 : (250 + index * 120);
                 window.setTimeout(() => {
                     item.classList.add('is-visible');
-                }, 250 + index * 120);
+                }, visibleDelay);
 
                 const button = item.querySelector('.reveal-trigger');
                 const panel = item.querySelector('.reveal-panel');
@@ -586,7 +624,21 @@
             });
         }
 
+        // Toggle to enable/disable star generation and rendering.
+        // Set to false to disable stars entirely (hides via body class and prevents JS creation).
+        const ENABLE_STARS = false;
+
+        // Toggle to enable/disable the countdown timer.
+        // Set to false to stop updating timers and hide timer UI.
+        const ENABLE_TIMER = false;
+
         const starfield = document.getElementById('starfield');
+        if (!ENABLE_STARS) {
+            try { document.body.classList.add('starfield-disabled'); } catch (e) {}
+        }
+        if (!ENABLE_TIMER) {
+            try { document.body.classList.add('timer-disabled'); } catch (e) {}
+        }
 
         function createColorCycler(selector, colorsArray, intervalMs = 500) {
             const elements = Array.from(document.querySelectorAll(selector));
@@ -623,6 +675,7 @@
         }
 
         function createStar() {
+            if (!ENABLE_STARS) return;
             if (!starfield) {
                 return;
             }
@@ -656,6 +709,7 @@
         }
 
         function launchStarSequence() {
+            if (!ENABLE_STARS) return;
             setInterval(() => {
                 const count = Math.floor(Math.random() * 4) + 1;
                 for (let i = 0; i < count; i += 1) {
@@ -666,16 +720,19 @@
 
         window.addEventListener('load', () => {
             renderRevealBlocks();
-            updateItemTimers();
-            updateNextDialogueInfo();
             updateStarfieldSize();
             launchStarSequence();
 
             createColorCycler('.color-cycle-target', ['#FFD154', '#54FF5F', '#FF7954', '#FF5465', '#FFA154', '#5479FF', '#87869F', '#CB42E7', '#5754F5', '#D33C1D'], 500);
 
-            // keep countdowns updated every second
-            window.setInterval(updateItemTimers, 1000);
-            window.setInterval(updateNextDialogueInfo, 1000);
+            // Timers: only initialize and run if enabled
+            if (typeof ENABLE_TIMER === 'undefined' || ENABLE_TIMER) {
+                updateItemTimers();
+                updateNextDialogueInfo();
+                // keep countdowns updated every second
+                window.setInterval(updateItemTimers, 1000);
+                window.setInterval(updateNextDialogueInfo, 1000);
+            }
         });
         window.addEventListener('resize', updateStarfieldSize);
     </script>
