@@ -221,6 +221,42 @@
             opacity: 1;
         }
 
+        /* Scrolling row of sonechko images */
+        .sonechko-row {
+            overflow: hidden;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .sonechko-track {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            will-change: transform;
+            /* duplicate content is provided for seamless looping */
+            animation: scroll-right 24s linear infinite;
+        }
+
+        .sonechko-item {
+            flex: 0 0 auto;
+        }
+
+        .sonechko-item img {
+            height: 140px;
+            width: auto;
+            display: block;
+            image-rendering: pixelated;
+        }
+
+        @keyframes scroll-right {
+            from { transform: translateX(-50%); }
+            to   { transform: translateX(0%); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .sonechko-track { animation: none; }
+        }
+
         .countdown-summary {
             text-align: center;
             color: #FFD154;
@@ -364,7 +400,9 @@
     </div>
 
     <div class="image-block" id="imageBlock1">
-        <img src="./imgs/sonechko.gif" alt="sonechko gif">
+        <div class="sonechko-row">
+            <div class="sonechko-track" id="sonechkoTrack" aria-hidden="true"></div>
+        </div>
     </div>
 
     <div class="starfield" id="starfield"></div>
@@ -372,12 +410,11 @@
     <div class="reveal-list" id="revealList"></div>
 
     <div class="button-info" id="summaryBlock">
-        <div class="today-date">Сегодняшняя дата это 15 августа.</div>
-        <div class="next-dialogue">С днём рождения меня...</div>
         <div class="active-timer" id="summaryTimer" data-target-time="0">00:00:00</div>
     </div>
 
     <div class="footer" id="footer">
+        <img src="./imgs/gif-animation-2_3.gif" alt="Footer Image">
     </div>
     
     <script>
@@ -533,17 +570,13 @@
             revealList.innerHTML = '';
 
             revealTasks.forEach((task, index) => {
-                // Only render the interactive reveal for РЕЧЬ 32 (index 31).
-                // Skip adding DOM nodes for reveals 1..31 (indices 0..30).
-                if (index < 31) {
-                    return;
-                }
+                // Render all reveals (make every РЕЧЬ available)
                 const unlockDate = new Date(revealStartDate);
                 unlockDate.setDate(revealStartDate.getDate() + index);
                 const nextUnlockDate = new Date(unlockDate);
                 nextUnlockDate.setDate(unlockDate.getDate() + 1);
-                // Make the first 31 reveals unavailable (keep them in the DOM but disabled)
-                const isUnlocked = index >= 31;
+                // All reveals are unlocked
+                const isUnlocked = true;
                 
                 const mediaContent = index === 2
                     ? `<div class="reveal-media"><img src="./imgs/travdey.png" alt="travdey image"></div>`
@@ -564,46 +597,31 @@
                 const item = document.createElement('div');
                 item.className = 'reveal-item';
 
-                // For РЕЧЬ 1..31 (index 0..30) remove the interactive button but keep the content in the DOM.
-                // Only render the reveal button for РЕЧЬ 32 and later (index >= 31).
-                if (isUnlocked) {
-                    item.innerHTML = `
-                        <button class="reveal-trigger" type="button" aria-expanded="false" aria-controls="revealPanel-${index}">
-                            <h3>—— ФИНАЛЬНАЯ РЕЧЬ ——</h3>
-                        </button>
-                        <div class="reveal-panel" id="revealPanel-${index}">
-                            <h3>${task.title}</h3>
-                            <p>${task.description}</p>
-                            ${mediaContent}
-                            ${mediaContent2}
-                            ${mediaContent3}
-                            ${mediaContent4}
-                            ${mediaContent5}
-                            <p class="reveal-note"></p>
-                        </div>
-                    `;
-                } else {
-                    // Render content without the numeric title for temporary hiding of numbers.
-                    item.innerHTML = `
-                        <div class="reveal-header">
-                            <h3>—— ФИНАЛЬНАЯ РЕЧЬ ——</h3>
-                        </div>
-                        <div class="reveal-panel" id="revealPanel-${index}">
-                            <p>${task.description}</p>
-                            ${mediaContent}
-                            ${mediaContent2}
-                            ${mediaContent3}
-                            ${mediaContent4}
-                            ${mediaContent5}
-                            <p class="reveal-note">Unlocks on ${unlockDate.toLocaleDateString('ru-RU')}</p>
-                        </div>
-                    `;
-                }
+                // Render interactive button and panel for every reveal
+                const buttonLabel = (index === revealTasks.length - 1)
+                    ? '—— ФИНАЛЬНАЯ РЕЧЬ ——'
+                    : `—— РЕЧЬ ${index + 1} ——`;
+
+                item.innerHTML = `
+                    <button class="reveal-trigger" type="button" aria-expanded="false" aria-controls="revealPanel-${index}">
+                        ${buttonLabel}
+                    </button>
+                    <div class="reveal-panel" id="revealPanel-${index}">
+                        <h3>${task.title}</h3>
+                        <p>${task.description}</p>
+                        ${mediaContent}
+                        ${mediaContent2}
+                        ${mediaContent3}
+                        ${mediaContent4}
+                        ${mediaContent5}
+                        <p class="reveal-note"></p>
+                    </div>
+                `;
 
                 revealList.appendChild(item);
 
-                // Delay visibility: make the РЕЧЬ 32 button appear after 6000ms, others keep original timing
-                const visibleDelay = (index === 31) ? 6000 : (250 + index * 120);
+                // Delay visibility: use original staggered timing for all items
+                const visibleDelay = 250 + index * 120;
                 window.setTimeout(() => {
                     item.classList.add('is-visible');
                 }, visibleDelay);
@@ -666,6 +684,92 @@
             return () => window.clearInterval(id);
         }
 
+        // Initialize the sonechko track from an array of filenames in /imgs/
+        // imageNames: array of file names in /imgs/
+        // copies: how many times to repeat the list before duplicating for seamless loop
+        // speedSec: duration (seconds) for one full sequence scroll
+        function initSonechkoTrack(imageNames = ['sonechko.gif'], copies = 1, speedSec = 28) {
+            const track = document.getElementById('sonechkoTrack');
+            if (!track) return;
+
+            // clear any existing content/animation
+            track.innerHTML = '';
+            if (track._sonechkoAnimation) {
+                try { track._sonechkoAnimation.cancel(); } catch (e) {}
+                track._sonechkoAnimation = null;
+            }
+
+            // Helper to append one sequence of images
+            function appendSequence(names) {
+                names.forEach(name => {
+                    const item = document.createElement('div');
+                    item.className = 'sonechko-item';
+                    const img = document.createElement('img');
+                    img.src = `./imgs/${name}`;
+                    img.alt = name;
+                    item.appendChild(img);
+                    track.appendChild(item);
+                });
+            }
+
+            for (let i = 0; i < copies; i++) {
+                appendSequence(imageNames);
+            }
+
+            // Duplicate content for seamless looping
+            const existing = Array.from(track.children);
+            existing.forEach(node => track.appendChild(node.cloneNode(true)));
+
+            // Disable CSS-based animation for the track (we'll use WAAPI)
+            track.style.animation = 'none';
+
+            // Respect reduced motion preference
+            if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                return;
+            }
+
+            // Measure width of the first sequence (sum of first imageNames.length * copies items)
+            const seqLen = imageNames.length * copies;
+            let attempts = 0;
+
+            function tryMeasure() {
+                attempts += 1;
+                const children = Array.from(track.children);
+                if (children.length < seqLen) {
+                    if (attempts < 30) return requestAnimationFrame(tryMeasure);
+                    return;
+                }
+
+                // Compute width including margins
+                const firstSeq = children.slice(0, seqLen);
+                const seqWidth = firstSeq.reduce((sum, el) => {
+                    const style = getComputedStyle(el);
+                    const mr = parseFloat(style.marginRight || 0);
+                    return sum + el.offsetWidth + mr;
+                }, 0);
+
+                if (seqWidth <= 0) {
+                    if (attempts < 30) return requestAnimationFrame(tryMeasure);
+                    return;
+                }
+
+                // Start a continuous linear animation from 0 to -seqWidth pixels
+                const durationMs = Math.max(100, Math.round(speedSec * 1000));
+                try {
+                    const anim = track.animate([
+                        { transform: 'translateX(0px)' },
+                        { transform: `translateX(-${seqWidth}px)` }
+                    ], { duration: durationMs, iterations: Infinity, easing: 'linear' });
+                    track._sonechkoAnimation = anim;
+                } catch (e) {
+                    // fallback: set CSS animation using percentage (may jump if sizes differ)
+                    track.style.animation = `scroll-right ${speedSec}s linear infinite`;
+                }
+            }
+
+            requestAnimationFrame(tryMeasure);
+        }
+
         function updateStarfieldSize() {
             if (!starfield) {
                 return;
@@ -720,6 +824,11 @@
 
         window.addEventListener('load', () => {
             renderRevealBlocks();
+
+            // Populate the scrolling sonechko track. Add image filenames present in /imgs/ here.
+            // Example: ['sonechko.gif', 'travdey.gif', 'irochka.gif', 'chroma.gif']
+            initSonechkoTrack(['sonechko.gif', 'travdey.gif', 'irochka.gif', 'toma.gif', 'vaneknobro.gif', 'ych.gif', 'chroma.gif', 'alock.gif', 'kosmo.gif', 'artosh.gif'], 1);
+
             updateStarfieldSize();
             launchStarSequence();
 
